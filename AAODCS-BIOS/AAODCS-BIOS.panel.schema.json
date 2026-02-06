@@ -1,0 +1,330 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thewarthogproject.com/schemas/AAODCS-BIOS.panel.schema.json",
+  "title": "AAODCS-BIOS panel mapping file",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "outputs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/outputMap"
+      },
+      "default": []
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/inputMap"
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "outputs",
+    "inputs"
+  ],
+  "$defs": {
+    "formatSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional formatting. Use standard .NET placeholder formats in template (e.g. {1:000.000}).",
+      "properties": {
+        "template": {
+          "type": "string",
+          "description": "string.Format template applied to sources (InvariantCulture)."
+        },
+        "scale": {
+          "type": "number",
+          "description": "Global numeric transform: y = (x + offset) * scale."
+        },
+        "offset": {
+          "type": "number",
+          "description": "Global numeric transform: y = (x + offset) * scale."
+        },
+        "round": {
+          "type": "string",
+          "enum": [
+            "nearest",
+            "floor",
+            "ceil",
+            "truncate"
+          ],
+          "description": "Optional rounding policy after transform."
+        },
+        "numFormat": {
+          "type": "string",
+          "description": "Numeric format when there is no template and a single numeric value (e.g. F3, 000.000, D5)."
+        }
+      }
+    },
+    "outputMap": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Friendly name for logging."
+        },
+        "dcs": {
+          "type": "string",
+          "description": "DCS-BIOS export identifier (e.g. TACAN_CHANNEL)."
+        },
+        "source": {
+          "type": "string",
+          "description": "AAO expression to read, e.g. (A:NAV ACTIVE FREQUENCY:1, MHz)."
+        },
+        "threshold": {
+          "type": "string",
+          "description": "Optional numeric threshold as string (kept for compatibility)."
+        },
+        "format": {
+          "$ref": "#/$defs/formatSpec",
+          "description": "Optional universal numeric/string formatter. If omitted, the raw AAO value is used (InvariantCulture). Note: DCS-BIOS string outputs have a fixed length; the bridge always right-pads with spaces (transport-level) to clear leftover characters. Use format.digits + padSide + padChar for explicit alignment/zero-fill."
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Target names from Outputs.Targets[].name"
+        },
+        "str": {
+          "$ref": "#/$defs/stringFitSpec"
+        }
+      },
+      "required": [
+        "dcs",
+        "source",
+        "targets"
+      ]
+    },
+    "inputFilterSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "deadband": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Ignore small changes on analog inputs (applied to raw value)."
+        },
+        "rateLimitMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum time between actions for this mapping (ms)."
+        }
+      }
+    },
+    "inputMapSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inMin",
+        "inMax",
+        "outMin",
+        "outMax"
+      ],
+      "properties": {
+        "inMin": {
+          "type": "number",
+          "description": "Raw input minimum."
+        },
+        "inMax": {
+          "type": "number",
+          "description": "Raw input maximum."
+        },
+        "outMin": {
+          "type": "number",
+          "description": "Mapped output minimum."
+        },
+        "outMax": {
+          "type": "number",
+          "description": "Mapped output maximum."
+        },
+        "round": {
+          "type": "string",
+          "enum": [
+            "nearest",
+            "floor",
+            "ceil",
+            "truncate"
+          ],
+          "description": "Rounding for {int}/{pct} placeholders."
+        },
+        "clamp": {
+          "type": "boolean",
+          "description": "Clamp raw and output to their ranges."
+        }
+      }
+    },
+    "inputMap": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Optional friendly name for logging."
+        },
+        "dcs": {
+          "type": "string",
+          "description": "DCS-BIOS input identifier (line prefix), e.g. TACAN_TEST_BTN."
+        },
+        "match": {
+          "type": "string",
+          "description": "Match token. Examples: 1, 0, TOGGLE, INC, DEC, or * (wildcard / any numeric)."
+        },
+        "filter": {
+          "$ref": "#/$defs/inputFilterSpec"
+        },
+        "map": {
+          "$ref": "#/$defs/inputMapSpec"
+        },
+        "aao": {
+          "$ref": "#/$defs/aaoAction"
+        }
+      },
+      "required": [
+        "dcs",
+        "aao"
+      ]
+    },
+    "aaoAction": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "script",
+            "trigger",
+            "setvar",
+            "button"
+          ],
+          "description": "AAO action type."
+        },
+        "code": {
+          "type": "string",
+          "description": "RPN script code (for type=script)."
+        },
+        "evt": {
+          "type": "string",
+          "description": "Trigger event string, e.g. (>K:NAV1_RADIO_SWAP) (for type=trigger)."
+        },
+        "value": {
+          "type": [
+            "number",
+            "integer"
+          ],
+          "description": "Trigger value (for type=trigger)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Variable name (for type=setvar)."
+        },
+        "id": {
+          "type": "string",
+          "description": "Button id (for type=button)."
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "script"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "code"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "trigger"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "evt"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "setvar"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "name",
+              "value"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "button"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "id"
+            ]
+          }
+        }
+      ]
+    },
+    "stringFitSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Final string fit inside the DCS-BIOS string buffer. Width defaults to the DCS-BIOS max_length.",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Optional display width. Defaults to DCS-BIOS max_length. If smaller than max_length, the remaining buffer is padded with spaces."
+        },
+        "clipSide": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ],
+          "default": "right",
+          "description": "If string is longer than width, keep leftmost or rightmost chars."
+        },
+        "padSide": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ],
+          "default": "right",
+          "description": "If string is shorter than width, pad on left (right-align) or right (left-align)."
+        },
+        "padChar": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1,
+          "default": " ",
+          "description": "Pad character (single char). Default space."
+        }
+      }
+    }
+  }
+}

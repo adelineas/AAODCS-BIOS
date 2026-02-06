@@ -1,0 +1,115 @@
+// tacan.jsonc
+// tacan panel, disabled by default in AAODCS-BIOS.jsonc
+
+{
+  "outputs": [
+    {
+      "name": "BRAKE PARKING LIGHT",
+      "dcs": "TACAN_TEST",
+      "source": "(A:BRAKE PARKING POSITION, Bool)",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "NAV ACTIVE FREQUENCY",
+      "dcs": "TACAN_CHANNEL",
+      "source": "(A:NAV ACTIVE FREQUENCY:2, MHz)",
+      "format": {
+        "round": "floor",
+        "template": "{0,4:0}"
+      },
+      "targets": [ "RS485_MASTER" ]
+    }
+  ],
+  // my TACAN uses "DcsBios::SwitchMultiPos tacanMode("TACAN_MODE", tacanModePins, 5)"
+  // change NAV1 active/stdby
+  "inputs": [
+    {
+      "name": "PARK BRAKE",
+      "dcs": "TACAN_TEST_BTN",
+      "match": "1",
+      "aao": {
+        "type": "script",
+        "code": "(>K:PARKING_BRAKES)"
+      }
+    },
+    {
+      "name": "RADIO SWAP",
+      "dcs": "TACAN_XY",
+      "match": "TOGGLE",
+      "aao": {
+        "type": "script",
+        "code": "(>K:NAV2_RADIO_SWAP)"
+      }    
+    },
+    {
+      "name": "Nav1 Radio swap",
+      "dcs": "TACAN_MODE",
+      "match": "1",
+      "aao": {
+        "type": "script",
+        "code": "1 (>K:NAV1_RADIO_SWAP)"
+      }
+    },
+    {
+      "name": "T2_TOGGLE",
+      "dcs": "TACAN_MODE",
+      "match": "2",
+      "aao": {
+        "type": "script",
+        "code": ""
+      }
+    },
+    {
+      "name": "T3_TOGGLE",
+      "dcs": "TACAN_MODE",
+      "match": "3",
+      "aao": {
+        "type": "script",
+        "code": ""
+      }
+    },
+    {
+      "name": "T4_TOGGLE",
+      "dcs": "TACAN_MODE",
+      "match": "4",
+      "aao": {
+        "type": "script",
+        "code": ""
+      }
+    },
+    {
+      "name": "Nav2 Radio Toggle",
+      "dcs": "TACAN_XY",
+      "match": "TOGGLE",
+      "aao": {
+        "type": "script",
+        "code": "(>K:NAV2_RADIO_SWAP)"
+      }
+    },
+    {
+      "name": "Light Test",
+      "dcs": "TACAN_VOL",
+      "match": "*",
+      "filter": {
+        "deadband": 150,
+        "rateLimitMs": 50
+      },
+      "map": {
+        "inMin": 0,
+        "inMax": 65535,
+        "outMin": 0,
+        "outMax": 100,
+        "round": "nearest",
+        "clamp": true
+      },
+      "aao": {
+        "type": "script",
+        "code": "{pct} (>K:LIGHT_POTENTIOMETER_1_SET)"
+      }
+    }
+
+  ]
+}
+
+
