@@ -1,0 +1,350 @@
+{
+  "$schema": "../AAODCS-BIOS.panel.schema.json",
+  // clp.jsonc
+  // Output: Caution Lights Panel
+
+  "outputs": [
+    {
+      "name": "CL_A1",
+      "dcs": "CL_A1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+
+    },
+    {
+      "name": "CL_A2",
+      "dcs": "CL_A2",
+      "source": "",
+      "for": null,
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_A3",
+      "dcs": "CL_A3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_A4",
+      "dcs": "CL_A4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+
+    {
+      "name": "ANTISKID Brakes Active",
+      "dcs": "CL_B1",
+      "source": "(A:ANTISKID BRAKES ACTIVE, Bool)",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_B2",
+      "dcs": "CL_B2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_B3",
+      "dcs": "CL_B3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_B4",
+      "dcs": "CL_B4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+
+    {
+      "name": "CL_C1",
+      "dcs": "CL_C1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_C2",
+      "dcs": "CL_C2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_C3",
+      "dcs": "CL_C3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_C4",
+      "dcs": "CL_C4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+
+    {
+      "name": "CL_D1",
+      "dcs": "CL_D1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_D2",
+      "dcs": "CL_D2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_D3",
+      "dcs": "CL_D3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_D4",
+      "dcs": "CL_D4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+
+    {
+      "name": "CL_E1",
+      "dcs": "CL_E1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_E2",
+      "dcs": "CL_E2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_E3",
+      "dcs": "CL_E3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_E4",
+      "dcs": "CL_E4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_F1",
+      "dcs": "CL_F1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_F2",
+      "dcs": "CL_F2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_F3",
+      "dcs": "CL_F3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_F4",
+      "dcs": "CL_F4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_G1",
+      "dcs": "CL_G1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_G2",
+      "dcs": "CL_G2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_G3",
+      "dcs": "CL_G3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_G4",
+      "dcs": "CL_G4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_H1",
+      "dcs": "CL_H1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_H2",
+      "dcs": "CL_H2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_H3",
+      "dcs": "CL_H3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_H4",
+      "dcs": "CL_H4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_I1",
+      "dcs": "CL_I1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_I2",
+      "dcs": "CL_I2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_I3",
+      "dcs": "CL_I3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_I4",
+      "dcs": "CL_I4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_J1",
+      "dcs": "CL_J1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_J2",
+      "dcs": "CL_J2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_J3",
+      "dcs": "CL_J3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_J4",
+      "dcs": "CL_J4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_K1",
+      "dcs": "CL_K1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_K2",
+      "dcs": "CL_K2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_K3",
+      "dcs": "CL_K3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_K4",
+      "dcs": "CL_K4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_L1",
+      "dcs": "CL_L1",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_L2",
+      "dcs": "CL_L2",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_L3",
+      "dcs": "CL_L3",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CL_L4",
+      "dcs": "CL_L4",
+      "source": "",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    }
+  ]
+}

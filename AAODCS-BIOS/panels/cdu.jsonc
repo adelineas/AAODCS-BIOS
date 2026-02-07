@@ -1,0 +1,62 @@
+{
+  "$schema": "../AAODCS-BIOS.panel.schema.json",
+  // cdu.jsonc
+  // cdu panel test
+  "outputs": [
+    {
+      "name": "CDU Line 0",
+      "dcs": "CDU_LINE0",
+      "sources": [ "CDU Static Text" ],
+      "targets": [ "RS485_MASTER" ]
+    },
+    // this value come from AAO LVar in scripts    'TEST·123'·(>L:CDU,·String)
+    {
+      "name": "CDU Line 1",
+      "dcs": "CDU_LINE1",
+      "source": "(L:CDU, String)",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CDU Line 2",
+      "dcs": "CDU_LINE2",
+      "sources": [ "Static Text", "(L:CDU, String)" ],
+      "format": { "template": "{0} and {1}" },
+      "targets": [ "RS485_MASTER" ]
+    },
+    // clear line 4
+    {
+      "name": "CDU Line 4",
+      "dcs": "CDU_LINE4",
+      "sources": [ "                        " ],
+      "format": { "template": "{0}" },
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CDU Line 6 is Left",
+      "dcs": "CDU_LINE6",
+      "sources": [ "Left:", "(A:NAV ACTIVE FREQUENCY:1, MHz)" ],
+      "format": { "template": "{0} {1:000.000}" },
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "CDU Line 7 is Right",
+      "dcs": "CDU_LINE7",
+      "sources": [ "Right:", "(A:NAV STANDBY FREQUENCY:1, MHz)" ],
+      "format": { "template": "{0} {1:000.000}" },
+      "targets": [ "RS485_MASTER" ],
+      "str": {
+        "width": 24,
+        "padSide": "left",
+        "padChar": " ",
+        "clipSide": "right"
+      }
+    },
+    {
+      "name": "CDU Line 8 is Left/Right",
+      "dcs": "CDU_LINE8",
+      "sources": [ "All:", "           ", "(A:NAV ACTIVE FREQUENCY:1, MHz)" ],
+      "format": { "template": "{0} {1} {2:000.000}" },
+      "targets": [ "RS485_MASTER" ]
+    }
+  ]
+}

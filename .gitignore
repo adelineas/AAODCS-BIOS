@@ -1,0 +1,27 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build output
+bin/
+obj/
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# OS junk
+Thumbs.db
+.DS_Store
+
+# Publish output (should go to GitHub Releases, not repo)
+**/publish/
+
+# Logs
+*.log
+
+# Optional: local overrides (if ever needed)
+appsettings.local.json

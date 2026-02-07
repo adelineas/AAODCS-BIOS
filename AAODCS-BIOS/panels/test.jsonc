@@ -1,0 +1,95 @@
+{
+  "$schema": "../AAODCS-BIOS.panel.schema.json",
+  /* test.jsonc
+Contains BOTH outputs + inputs for quick testing.
+Output: Parking brake state -> MASTER_CAUTION LED (as a visible test)
+
+IMPORTANT: The input mapping below will only match if your Arduino/master sends a line like: PARK_BRAKE TOGGLE
+If your hardware sends a different identifier, change "dcs".*/
+
+  "outputs": [
+    {
+      "name": "PARKBRAKE_TO_MASTERCAUTION",
+      "dcs": "MASTER_CAUTION",
+      "source": "(A:BRAKE PARKING POSITION, Bool)",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "BRAKE PARKING LIGHT",
+      "dcs": "TACAN_TEST",
+      "source": "(A:BRAKE PARKING POSITION, Bool)",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "NAV ACTIVE FREQUENCY",
+      "dcs": "TACAN_CHANNEL",
+      "source": "(A:NAV ACTIVE FREQUENCY:1, MHz)",
+      "format": {
+        "round": "floor",
+        "template": "{0,4:0}"
+      },
+      "targets": [ "RS485_MASTER" ]
+    }
+  ],
+  "inputs": [
+    {
+      "name": "PARK BRAKE",
+      "dcs": "TACAN_TEST_BTN",
+      "match": "1",
+      "aao": {
+        "type": "script",
+        "code": "(>K:PARKING_BRAKES)"
+      }
+    },
+    {
+      "name": "RADIO SWAP",
+      "dcs": "TACAN_XY",
+      "match": "TOGGLE",
+      "aao": {
+        "type": "script",
+        "code": "(>K:NAV1_RADIO_SWAP)"
+      }
+    },
+    {
+      "name": "Light Test",
+      "dcs": "TACAN_VOL",
+      "match": "*",
+      "filter": {
+        "deadband": 150,
+        "rateLimitMs": 50
+      },
+      "map": {
+        "inMin": 0,
+        "inMax": 65535,
+        "outMin": 0,
+        "outMax": 100,
+        "round": "nearest",
+        "clamp": true
+      },
+      "aao": {
+        "type": "script",
+        "code": "{pct} (>K:LIGHT_POTENTIOMETER_1_SET)"
+      }
+    },
+    {
+      "name": "AP Airspeed inc",
+      "dcs": "TACAN_1",
+      "match": "INC",
+      "aao": {
+        "type": "script",
+        "code": "(>K:AP_SPD_VAR_INC)"
+      }
+    },
+    {
+      "name": "APAP Airspeed dec",
+      "dcs": "TACAN_1",
+      "match": "DEC",
+      "aao": {
+        "type": "script",
+        "code": "(>K:AP_SPD_VAR_DEC)"
+      }
+    }
+  ]
+}

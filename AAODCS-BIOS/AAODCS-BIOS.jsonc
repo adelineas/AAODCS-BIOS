@@ -1,0 +1,113 @@
+{
+  // AAO ↔ DCS-BIOS Runtime Bridge main configuration (JSONC = comments allowed)
+
+  "Aao": {
+    /* AAO WebAPI base URL. You may specify host:port only; the bridge will normalize to /webapi/
+    Examples: "http://127.0.0.1:43380" or "http://127.0.0.1:43380/webapi/"  */
+    "BaseUrl": "http://127.0.0.1:43380",
+
+    // How often outputs are polled from AAO (ms)
+    "PollMs": 20
+  },
+
+  "DcsBios": {
+    // DCS-BIOS doc/json folder
+    "DocJsonPath": "c:\\Users\\andreas\\Saved Games\\DCS\\Scripts\\DCS-BIOS\\doc\\json\\",
+
+    // Aircraft JSON name without .json OR an alias in AircraftAliases.json
+    "Aircraft": "A-10C"
+  },
+
+  "Outputs": {
+    // How often we send a DCS-BIOS export frame to each target (≈30 Hz default)
+    "FramePeriodMs": 33.333,
+
+    // Serial targets (COM ports)
+    "Targets": [
+      {
+        "name": "RS485_MASTER",
+        // type is optional, default is "usb".
+        // NOTE: Even when an Arduino is RS485 master with multiple slaves behind it,
+        // the PC still talks to the Arduino master over a normal USB COM port => use default "usb".
+        "port": "COM6",
+
+        // All values below are optional and can be overridden per target:
+        "enabled": true,
+        "baud": 250000,
+        "rx": true,
+
+        // Important for some USB-RS485/USB-serial adapters:
+        "rtsEnable": true,
+        "dtrEnable": false
+      },
+      {
+        "name": "UFC",
+        "port": "COM4",
+        "enabled": false,
+        "baud": 250000,
+        "rx": true,
+        "rtsEnable": true,
+        "dtrEnable": false
+      }
+    ]
+  },
+
+  "Bridge": {
+    // visible Outputs
+    "Verbose": true,
+
+    // Optional diagnostics:
+    "IoStats": false, // logs TX/RX counters every ~2s
+    "LogUnmatchedRx": false, // logs RX lines even if not mapped
+    "LogAaoReply": false, // logs AAO answer
+    "DryRun": false,
+    "AllowNoTargets": false,
+
+    // Panel mapping your own files
+    "PanelsDir": "panels",
+    "Panels": [
+      {
+        "file": "test.jsonc",
+        "enabled": true
+      },
+      {
+        "file": "TEMPLATE.jsonc",
+        "enabled": false
+      },
+      {
+        "file": "tacan.jsonc",
+        "enabled": false
+      },
+      {
+        "file": "cdu.jsonc",
+        "enabled": false
+      },     
+      {
+        "file": "clp.jsonc",
+        "enabled": false
+      },
+      {
+        "file": "ufc.jsonc",
+        "enabled": false
+      }
+      // much more panel
+    ]
+  },
+
+  "Inputs": {
+    // If match is numeric ("0", "1", ...), only fire on value changes (edge behavior).
+    "EdgeNumericMatches": true,
+	/* Persist + replay last numeric states for inputs that opt in via panel mappings:
+    Add to an input mapping:  "persist": "laststate"    
+    This writes a small JSON file (dcs -> lastValue) next to the executable.
+    If no inputs use persist:laststate, this is completely inactive. */
+    "LastState": {
+      "File": "input_laststate.json",
+      "FlushIntervalMs": 5000,
+      "ApplyDelayMs": 500
+    },
+    // Optional verification after each action:
+    "VerifyAfterAction": [],
+    "VerifyDelayMs": 50   
+  }
+}

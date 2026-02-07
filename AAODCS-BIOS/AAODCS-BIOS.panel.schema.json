@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "urn:aaodcs-bios:schema:panel:vs",
+  "title": "AAODCS-BIOS Panel (Visual Studio compatible)",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "dcs",
+          "targets"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "dcs": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "format": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "str": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "width": {
+                "type": "integer"
+              },
+              "padSide": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              },
+              "padChar": {
+                "type": "string"
+              },
+              "clipSide": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              }
+            }
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "threshold": {
+            "type": "string"
+          },
+          "invert": {
+            "type": "boolean"
+          },
+          "round": {
+            "type": "string",
+            "enum": [
+              "nearest",
+              "floor",
+              "ceil",
+              "truncate"
+            ]
+          }
+        }
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "dcs",
+          "match",
+          "aao"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "dcs": {
+            "type": "string"
+          },
+          "match": {
+            "type": "string"
+          },
+          "persist": {
+            "type": "string",
+            "enum": [
+              "laststate"
+            ]
+          },
+          "aao": {
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "script",
+                  "trigger",
+                  "setvar",
+                  "setvars",
+                  "button"
+                ]
+              },
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "value": {},
+              "values": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

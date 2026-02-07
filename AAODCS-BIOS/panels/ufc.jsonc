@@ -1,0 +1,15 @@
+{
+  "$schema": "../AAODCS-BIOS.panel.schema.json",
+  // ufc.jsonc
+  // ufc panel, disabled by default in appsettings.json
+  "outputs": [
+    {
+      "name": "PARKBRAKE TO MASTERCAUTION",
+      "dcs": "MASTER_CAUTION",
+      "source": "(A:BRAKE PARKING POSITION, Bool)",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    }
+  ],
+  "inputs": []
+}

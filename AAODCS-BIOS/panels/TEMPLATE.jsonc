@@ -1,0 +1,106 @@
+{
+  "$schema": "../AAODCS-BIOS.panel.schema.json",
+  /*TEMPLATE.jsonc
+   Notes:
+   - "dcs" must match the DCS-BIOS control/output name exactly.
+   - "name" is optional and only for humans/logging. */
+
+  "outputs": [
+    {
+      "name": "NAV1 Active Frequency", // optional label
+      "dcs": "TACAN_CHANNEL", // DCS-BIOS output identifier
+      "source": "(A:NAV ACTIVE FREQUENCY:1, MHz)", // AAO expression (SimVar + unit)
+
+      // Example: 108.75 -> " 108"
+      "format": {
+        "round": "floor",
+        "template": "{0,4:0}"
+      },
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "COM1 Active Frequency",
+      "dcs": "CDU_LINE0",
+      "source": "(A:COM ACTIVE FREQUENCY:1, MHz)",
+      // Example:
+      //   AAO value (MHz): 118.275 on left side cdu
+      //   We want on the display: "118.275" (always 3 decimals)
+      "format": {
+        // Use .NET numeric formatting directly in the template:
+        //  - "000.000" forces 3 digits before and 3 digits after the decimal point
+        //  - this keeps trailing zeros (e.g. 118.200 -> "118.200")
+        "template": "{0:000.000}"
+      },
+      "targets": [ "RS485_MASTER" ]
+    },
+    {
+      "name": "Parkbrake light",
+      "dcs": "BRAKE_PARKING_LIGHT",
+      // Example: Bool -> "0" / "1" as fixed 1 digit
+      "source": "(A:BRAKE PARKING POSITION, Bool)",
+      "threshold": "0.5",
+      "targets": [ "RS485_MASTER" ]
+    }
+  ],
+  "inputs": [
+    {
+      "name": "PARK BRAKE",
+      "dcs": "TACAN_TEST_BTN",
+      "match": "1",
+      "aao": {
+        "type": "script",
+        "code": "(>K:PARKING_BRAKES)"
+      }
+    },
+    {
+      "name": "NAV1 Radio swap",
+      "dcs": "TACAN_XY",
+      "match": "TOGGLE",
+      "aao": {
+        "type": "script",
+        "code": "(>K:NAV1_RADIO_SWAP)"
+      }
+    },
+    // Poti
+    {
+      "name": "Light Test",
+      "dcs": "TACAN_VOL",
+      "match": "*",
+      "filter": {
+        "deadband": 150,
+        "rateLimitMs": 50
+      },
+      "map": {
+        "inMin": 0,
+        "inMax": 65535,
+        "outMin": 0,
+        "outMax": 100,
+        "round": "nearest",
+        "clamp": true
+      },
+      "aao": {
+        "type": "script",
+        "code": "{pct} (>K:LIGHT_POTENTIOMETER_1_SET)"
+      }
+    },
+    // Rotery
+    {
+      "name": "AP Airspeed inc",
+      "dcs": "TACAN_1",
+      "match": "INC",
+      "aao": {
+        "type": "script",
+        "code": "(>K:AP_SPD_VAR_INC)"
+      }
+    },
+    {
+      "name": "APAP Airspeed dec",
+      "dcs": "TACAN_1",
+      "match": "DEC",
+      "aao": {
+        "type": "script",
+        "code": "(>K:AP_SPD_VAR_DEC)"
+      }
+    }
+  ]
+}

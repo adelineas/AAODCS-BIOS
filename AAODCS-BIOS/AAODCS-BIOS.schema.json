@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema#",
+  "$id": "urn:aaodcs-bios:schema:main",
+  "title": "AAODCS-BIOS main configuration",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "Aao": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "AxisAndOhs WebAPI settings.",
+      "properties": {
+        "BaseUrl": {
+          "type": "string",
+          "description": "AAO WebAPI base URL. Use http://127.0.0.1:43380 or http://127.0.0.1:43380/webapi/ .",
+          "examples": [
+            "http://127.0.0.1:43380",
+            "http://127.0.0.1:43380/webapi/"
+          ]
+        },
+        "ActionBaseUrl": {
+          "type": "string",
+          "description": "Optional separate base URL for action POSTs (scripts/triggers/setvars/buttons). Useful to target AAO secondary port (primary+1) to reduce contention.",
+          "examples": [
+            "http://127.0.0.1:43381",
+            "http://127.0.0.1:43381/webapi/"
+          ]
+        },
+        "PollMs": {
+          "type": "integer",
+          "minimum": 10,
+          "description": "How often outputs are polled from AAO (milliseconds).",
+          "default": 20
+        },
+        "TimeoutMs": {
+          "type": "integer",
+          "minimum": 100,
+          "description": "HTTP timeout for AAO requests (milliseconds).",
+          "default": 2000
+        }
+      }
+    },
+    "DcsBios": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "DCS-BIOS JSON doc folder and aircraft selection (used for resolving DCS-BIOS identifiers).",
+      "properties": {
+        "DocJsonPath": {
+          "type": "string",
+          "description": "Path to DCS-BIOS doc/json folder."
+        },
+        "Aircraft": {
+          "type": "string",
+          "description": "DCS aircraft folder name, e.g. A-10C, A-10C_2."
+        }
+      }
+    },
+    "Outputs": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Output streaming to DCS-BIOS hardware targets.",
+      "properties": {
+        "FramePeriodMs": {
+          "type": "number",
+          "minimum": 5,
+          "description": "DCS-BIOS export frame cadence. ~33.333ms \u2248 30Hz. This is per target/port sender loop, not per output mapping.",
+          "default": 33.333
+        },
+        "Targets": {
+          "type": "array",
+          "description": "Serial targets. Usually USB serial ports connected either directly to an Arduino (DEFAULT_SERIAL) or to an RS485 master Arduino (RS485_MASTER).",
+          "items": {
+            "$ref": "#/$defs/serialTarget"
+          }
+        }
+      },
+      "required": [
+        "Targets"
+      ]
+    },
+    "Inputs": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Input processing behavior (global). Panel mappings live in panels/*.jsonc.",
+      "properties": {
+        "EdgeNumericMatches": {
+          "type": "boolean",
+          "description": "If true, numeric matches like match:\"1\" trigger only on value change (0\u21921), which makes RS485 polling behave like USB edge events.",
+          "default": true
+        },
+        "DebounceMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Optional debounce window for repeated identical input lines. 0 disables.",
+          "default": 0
+        },
+        "PostActionQuietMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Optional pause of AAO polling after sending an action to reduce contention. 0 disables.",
+          "default": 0
+        },
+        "VerifyDelayMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Delay before running VerifyAfterAction reads (milliseconds).",
+          "default": 0
+        },
+        "VerifyAfterAction": {
+          "type": "array",
+          "description": "AAO variable expressions to read after each action for debugging (e.g. (A:BRAKE PARKING POSITION, Bool)). Empty disables.",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "VerifyOnlyFor": {
+          "type": "array",
+          "description": "Optional list of DCS input identifiers (e.g. TACAN_TEST_BTN) for which verification is performed. If omitted/empty, verify runs for all actions.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "LastState": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Optional persistence/replay of last numeric states for inputs that opt in via panel mappings (persist:laststate).",
+          "properties": {
+            "File": {
+              "type": "string",
+              "default": "input_laststate.json",
+              "description": "Path to JSON file that stores dcs->lastValue. Relative paths are resolved from the program directory."
+            },
+            "FlushIntervalMs": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 1000,
+              "description": "Minimum interval between writes to disk."
+            },
+            "ApplyDelayMs": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "description": "Delay before replaying last states after AAO probe (milliseconds)."
+            }
+          }
+        }
+      }
+    },
+    "Bridge": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Bridge runtime settings.",
+      "properties": {
+        "Verbose": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable verbose logging."
+        },
+        "DryRun": {
+          "type": "boolean",
+          "default": false,
+          "description": "Run without writing to serial ports."
+        },
+        "AllowNoTargets": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, do not error when no serial ports could be opened."
+        },
+        "IoStats": {
+          "type": "boolean",
+          "default": false,
+          "description": "Log per-target TX/RX byte counters every ~2 seconds."
+        },
+        "LogUnmatchedRx": {
+          "type": "boolean",
+          "default": false,
+          "description": "Log RX lines even if they do not match any mapping."
+        },
+        "LogAaoReply": {
+          "type": "boolean",
+          "default": false,
+          "description": "When Verbose=true, also log the raw AAO WebAPI response body for actions (useful for troubleshooting)."
+        },
+        "PanelsDir": {
+          "type": "string",
+          "default": "panels",
+          "description": "Directory containing panel mapping files (*.jsonc)."
+        },
+        "Panels": {
+          "type": "array",
+          "description": "List of panel mapping files to load.",
+          "items": {
+            "$ref": "#/$defs/panelRef"
+          }
+        }
+      },
+      "required": [
+        "PanelsDir",
+        "Panels"
+      ]
+    }
+  },
+  "required": [
+    "Aao",
+    "Outputs",
+    "Bridge"
+  ],
+  "$defs": {
+    "serialTarget": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Logical target name referenced from panel mappings (targets: [..])."
+        },
+        "port": {
+          "type": "string",
+          "description": "Serial port name, e.g. COM6."
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "usb",
+            "rs485_master"
+          ],
+          "default": "usb",
+          "description": "Target transport. For Arduino RS485_MASTER connected via USB, use usb."
+        },
+        "baud": {
+          "type": "integer",
+          "default": 250000,
+          "description": "Baud rate."
+        },
+        "rx": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable RX parsing from this port."
+        },
+        "rtsEnable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Set RTS when opening the port. Needed for some USB-RS485 adapters."
+        },
+        "dtrEnable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Set DTR when opening the port."
+        }
+      },
+      "required": [
+        "name",
+        "port"
+      ]
+    },
+    "panelRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "type": "string",
+          "description": "Panel mapping file (relative to PanelsDir)."
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": [
+        "file"
+      ]
+    }
+  }
+}
